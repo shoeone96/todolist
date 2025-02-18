@@ -37,7 +37,7 @@ function render() {
                 <div class="task">
                     <div class = "task-done">${taskList[i].taskContent}</div>
                     <div>
-                        <button class="button" onclick="toggleComplete('${taskList[i].id}')">
+                        <button class="button" onclick="toggleComplete('${i}')">
                             <i class="fa-solid fa-rotate-right"></i>
                         </button>
                         <button class="button" onclick="deleteTask('${i}')">
@@ -50,7 +50,7 @@ function render() {
                 <div class="task">
                     <div>${taskList[i].taskContent}</div>
                     <div>
-                        <button class="button" onclick="toggleComplete('${taskList[i].id}')">
+                        <button class="button" onclick="toggleComplete('${i}')">
                             <i class="fa-solid fa-check"></i>
                         </button>
                         <button class="button" onclick="deleteTask('${i}')">
@@ -64,13 +64,8 @@ function render() {
     document.getElementById("task-board").innerHTML = resultHtml;
 }
 
-function toggleComplete(id) {
-    for (let i = 0; i < taskList.length; i++) {
-        if (taskList[i].id == id) {
-            taskList[i].isComplete = !taskList[i].isComplete;
-            break;
-        }
-    }
+function toggleComplete(index) {
+    taskList[index].isComplete = !taskList[index].isComplete;
     render();
 }
 
