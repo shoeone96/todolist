@@ -8,30 +8,73 @@
 
 let textInput = document.getElementById("text-input");
 let addButton = document.getElementById("add-button");
+
 let taskList = [];
 
+addButton.addEventListener("click", addTask)
+
+function randomNum() {
+    return '_' + Math.random().toString(36).substr(2, 9)
+}
+
 function addTask() {
-    let taskContent = textInput.value;
-    taskList.push(taskContent);
+    let task = {
+        id: randomNum(),
+        taskContent: textInput.value,
+        isComplete: false,
+    }
+    console.log(task)
+
+    taskList.push(task);
     render(taskList);
 }
 
 function render() {
     let resultHtml = "";
     for (let i = 0; i < taskList.length; i++) {
-        resultHtml += `
+        if (taskList[i].isComplete == true) {
+            resultHtml += `
                 <div class="task">
-                    <div>${taskList[i]}</div>
+                    <div class = "task-done">${taskList[i].taskContent}</div>
                     <div>
-                        <button>Check</button>
-                        <button>Delete</button>
+                        <button class="button" onclick="toggleComplete('${taskList[i].id}')">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                        <button class="button" onclick="deleteTask('${i}')">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </div>
                 </div>`
+        } else {
+            resultHtml += `
+                <div class="task">
+                    <div>${taskList[i].taskContent}</div>
+                    <div>
+                        <button class="button" onclick="toggleComplete('${taskList[i].id}')">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button class="button" onclick="deleteTask('${i}')">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>`
+        }
     }
 
     document.getElementById("task-board").innerHTML = resultHtml;
 }
 
-addButton.addEventListener("click", addTask)
+function toggleComplete(id) {
+    for (let i = 0; i < taskList.length; i++) {
+        if (taskList[i].id == id) {
+            taskList[i].isComplete = !taskList[i].isComplete;
+            break;
+        }
+    }
+    render();
+}
 
-
+function deleteTask(index) {
+    taskList.splice(index, 1);
+    render();
+}

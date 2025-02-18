@@ -40,3 +40,12 @@ body {
     justify-content: space-between;
     padding: 1rem;
 }
+
+.task-done {
+    text-decoration: line-through;
+}
+
+.button {
+    background-color: transparent;
+    border: none;
+}
