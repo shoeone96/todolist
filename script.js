@@ -1,67 +1,61 @@
-// 유저가 값을 입력
-// + 버튼 클릭 시 할일 추가
-// delete 버튼 누르면 할일 삭제
-// check 버늩 완료, 밑줄
-// 진행중 끝남 탭 누르면, 언더바가 이동
-// 끝남 탭은, 끝난 아이템만, 진행중은 진행중인 아이템만
-// 전체 탭을 누르면 다시 전체 아이템
-
 let textInput = document.getElementById("text-input");
 let addButton = document.getElementById("add-button");
+let tabs = document.querySelectorAll(".task-tabs div");
+let taskBoard = document.getElementById("task-board");
 
 let taskList = [];
+let selectedTab = "all";
 
-addButton.addEventListener("click", addTask)
+for (let i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener("click", (event) => {
+        filter(event);
+    });
+}
+
+addButton.addEventListener("click", addTask);
 
 function randomNum() {
-    return '_' + Math.random().toString(36).substr(2, 9)
+    return '_' + Math.random().toString(36).substr(2, 9);
 }
 
 function addTask() {
+    if (textInput.value.trim() === "") return;
+
     let task = {
         id: randomNum(),
         taskContent: textInput.value,
         isComplete: false,
-    }
-    console.log(task)
-
+    };
     taskList.push(task);
-    render(taskList);
+    textInput.value = "";
+    render();
 }
 
 function render() {
-    let resultHtml = "";
-    for (let i = 0; i < taskList.length; i++) {
-        if (taskList[i].isComplete == true) {
-            resultHtml += `
-                <div class="task">
-                    <div class = "task-done">${taskList[i].taskContent}</div>
-                    <div>
-                        <button class="button" onclick="toggleComplete('${i}')">
-                            <i class="fa-solid fa-rotate-right"></i>
-                        </button>
-                        <button class="button" onclick="deleteTask('${i}')">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>`
-        } else {
-            resultHtml += `
-                <div class="task">
-                    <div>${taskList[i].taskContent}</div>
-                    <div>
-                        <button class="button" onclick="toggleComplete('${i}')">
-                            <i class="fa-solid fa-check"></i>
-                        </button>
-                        <button class="button" onclick="deleteTask('${i}')">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </div>
-                </div>`
-        }
+    let filteredList = taskList;
+    if (selectedTab === "ongoing") {
+        filteredList = taskList.filter(task => !task.isComplete);
+    } else if (selectedTab === "done") {
+        filteredList = taskList.filter(task => task.isComplete);
     }
 
-    document.getElementById("task-board").innerHTML = resultHtml;
+    let resultHtml = "";
+    filteredList.forEach((task, index) => {
+        resultHtml += `
+            <div class="task ${task.isComplete ? 'task-done-bg' : ''}">
+                <div class="${task.isComplete ? 'task-done' : ''}">${task.taskContent}</div>
+                <div>
+                    <button class="button" onclick="toggleComplete('${index}')">
+                        <i class="fa-solid ${task.isComplete ? 'fa-rotate-right' : 'fa-check'}"></i>
+                    </button>
+                    <button class="button" onclick="deleteTask('${index}')">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </div>`;
+    });
+
+    taskBoard.innerHTML = resultHtml;
 }
 
 function toggleComplete(index) {
@@ -73,3 +67,12 @@ function deleteTask(index) {
     taskList.splice(index, 1);
     render();
 }
+
+function filter(event) {
+    selectedTab = event.target.id;
+    tabs.forEach(tab => tab.classList.remove('selected-tab'));
+    event.target.classList.add('selected-tab');
+    render();
+}
+
+render();

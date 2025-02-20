@@ -49,3 +49,26 @@ body {
     background-color: transparent;
     border: none;
 }
+
+.task-tabs div:hover {
+    cursor: pointer;
+}
+
+.selected-tab {
+    border-bottom: pink 5px solid;
+}
+
+.task-done-bg {
+    background-color: gray;
+}
+
+.input-area {
+    margin-bottom: 1rem;
+}
+
+.input-area>input {
+    border: 1px solid lightgray;
+    padding: 0.5rem;
+    width: 200px;
+    border-radius: 5px;
+}
