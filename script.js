@@ -14,6 +14,12 @@ for (let i = 0; i < tabs.length; i++) {
 
 addButton.addEventListener("click", addTask);
 
+textInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        addTask();
+    }
+});
+
 function randomNum() {
     return '_' + Math.random().toString(36).substr(2, 9);
 }
@@ -40,15 +46,15 @@ function render() {
     }
 
     let resultHtml = "";
-    filteredList.forEach((task, index) => {
+    filteredList.forEach(task => {
         resultHtml += `
             <div class="task ${task.isComplete ? 'task-done-bg' : ''}">
                 <div class="${task.isComplete ? 'task-done' : ''}">${task.taskContent}</div>
                 <div>
-                    <button class="button" onclick="toggleComplete('${index}')">
+                    <button class="button" onclick="toggleComplete('${task.id}')">
                         <i class="fa-solid ${task.isComplete ? 'fa-rotate-right' : 'fa-check'}"></i>
                     </button>
-                    <button class="button" onclick="deleteTask('${index}')">
+                    <button class="button" onclick="deleteTask('${task.id}')">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -58,13 +64,16 @@ function render() {
     taskBoard.innerHTML = resultHtml;
 }
 
-function toggleComplete(index) {
-    taskList[index].isComplete = !taskList[index].isComplete;
-    render();
+function toggleComplete(taskId) {
+    let task = taskList.find(t => t.id === taskId);
+    if (task) {
+        task.isComplete = !task.isComplete;
+        render();
+    }
 }
 
-function deleteTask(index) {
-    taskList.splice(index, 1);
+function deleteTask(taskId) {
+    taskList = taskList.filter(task => task.id !== taskId);
     render();
 }
 
